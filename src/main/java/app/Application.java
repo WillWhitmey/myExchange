@@ -1,6 +1,7 @@
 package app;
 
 import app.stock.*;
+import app.user.*;
 import app.util.*;
 import static spark.Spark.*;
 import static spark.debug.DebugScreen.*;
@@ -9,11 +10,13 @@ public class Application {
 
     // Declare dependencies
     public static StockDao stockDao;
+    public static UserDao userDao;
 
     public static void main(String[] args) {
 
         // Instantiate your dependencies
         stockDao = new StockDao();
+        userDao = new UserDao();
 
         // Configure Spark
         port(4567);
@@ -25,6 +28,9 @@ public class Application {
 
         // Set up routes
         get("/stocks/",         StockController.fetchAllStocks);
+        get("/stocks/create/",   StockController.createAStock);
+        get("/stocks/update/",  StockController.updateAStock);
+        get("/users/",          UserController.fetchAllUsers);
         get("*",                     ViewUtil.notFound);
 
         //Set up after-filters (called after each get/post)

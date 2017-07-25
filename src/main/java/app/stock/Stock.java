@@ -4,11 +4,13 @@ import lombok.*;
 
 @Value
 public class Stock {
-    public String company;
+    public Integer id;
+    public String name;
     public Integer price;
 
-    public Stock(String company, Integer price) {
-        this.company = company;
+    public Stock(Integer id, String name, Integer price) {
+        this.id = id;
+        this.name = name;
         this.price = price;
     }
 }
