@@ -10,8 +10,8 @@ public class StockController {
     public static Route fetchAllStocks = (Request request, Response response) -> {
         return dataToJson(stockDao.getAllStocks());
     };
-    public static Route createAStock = (Request request, Response response) -> {
-        return dataToJson(stockDao.createStock());
+    public static Object createAStock(Request req, Response res) {
+        return dataToJson(stockDao.createStock(will.name, req.attribute("price")));
     };
     public static Route updateAStock = (Request request, Response response) -> {
         return dataToJson(stockDao.updateStock());
