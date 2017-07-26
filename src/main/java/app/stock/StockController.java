@@ -11,7 +11,9 @@ public class StockController {
         return dataToJson(stockDao.getAllStocks());
     };
     public static Object createAStock(Request req, Response res) {
-        return dataToJson(stockDao.createStock(will.name, req.attribute("price")));
+        String name = req.body();
+        System.out.println(name);
+        return dataToJson(stockDao.createStock(name));
     };
     public static Route updateAStock = (Request request, Response response) -> {
         return dataToJson(stockDao.updateStock());

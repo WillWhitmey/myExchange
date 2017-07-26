@@ -30,11 +30,11 @@ public class StockDao {
         return stocks;
     }
 
-    public Iterable<Stock> createStock(String name, Integer price) {
+    public Iterable<Stock> createStock(String name) {
         DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root");
         Handle h = dbi.open();
 
-        h.execute("INSERT INTO `prices`.`companies` (`name`, `price`) VALUES (" + name + ", " + price + ")");
+        h.execute("INSERT INTO `prices`.`companies` (`name`, `price`) VALUES ('" + name + "', 100)");
 
         List<Stock> stocks = h.createQuery("SELECT id, name, price FROM prices.companies")
                 .map(new ResultSetMapper<Stock>() {
