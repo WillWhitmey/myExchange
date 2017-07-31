@@ -84,4 +84,29 @@ public class StockDao {
 //        }
 
     }
+
+    public Iterable<Stock> deleteStock(Stock stock) {
+        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root&relaxAutoCommit=true");
+        Handle h = dbi.open();
+
+        try (Handle handle = dbi.open()) {
+
+            h.execute("DELETE FROM `prices`.`companies` WHERE id=?",
+                    stock.getId());
+
+            return h.createQuery("SELECT id, name, price FROM prices.companies")
+                    .map(new ResultSetMapper<Stock>() {
+                        @Override
+                        public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
+                            return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"));
+                        }
+                    })
+                    .list();
+        }
+//        } catch (Exception e) {
+//            h.rollback();
+//            throw new RuntimeException(e);
+//        }
+
+    }
 }

@@ -38,4 +38,15 @@ public class StockController {
         stock.getPriceAtDate();
         return dataToJson(stockDao.updateStock(stock));
     }
+    public static Object deleteAStock(Request req, Response res) throws IOException {
+        Set name = req.attributes();
+        System.out.println(req.body());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Stock stock = objectMapper.readValue(req.body(), Stock.class);
+
+        stock.getPriceAtDate();
+        return dataToJson(stockDao.deleteStock(stock));
+    }
 }

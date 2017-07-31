@@ -30,6 +30,7 @@ public class Application {
         get("/stocks/",         StockController.fetchAllStocks);
         post("/stocks/create/", "application/json", (req, res) -> { return StockController.createAStock(req, res);});
         put("/stocks/update/",  "application/json", (req, res) -> { return StockController.updateAStock(req, res);});
+        delete("/stocks/delete/", "application/json", (req, res) -> { return StockController.deleteAStock(req, res);});
         get("/users/",          UserController.fetchAllUsers);
         get("*",                     ViewUtil.notFound);
 
