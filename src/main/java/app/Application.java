@@ -29,7 +29,7 @@ public class Application {
         // Set up routes
         get("/stocks/",         StockController.fetchAllStocks);
         post("/stocks/create/", "application/json", (req, res) -> { return StockController.createAStock(req, res);});
-        get("/stocks/update/",  StockController.updateAStock);
+        put("/stocks/update/",  "application/json", (req, res) -> { return StockController.updateAStock(req, res);});
         get("/users/",          UserController.fetchAllUsers);
         get("*",                     ViewUtil.notFound);
 

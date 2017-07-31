@@ -30,41 +30,58 @@ public class StockDao {
         return stocks;
     }
 
-    public Iterable<Stock> createStock(String name) {
-        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root");
+    public Iterable<Stock> createStock(Stock stock) {
+        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root&relaxAutoCommit=true");
         Handle h = dbi.open();
 
-        h.execute("INSERT INTO `prices`.`companies` (`name`, `price`) VALUES ('" + name + "', 100)");
+        try (Handle handle = dbi.open()) {
 
-        List<Stock> stocks = h.createQuery("SELECT id, name, price FROM prices.companies")
-                .map(new ResultSetMapper<Stock>() {
-                    @Override
-                    public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                        return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"));
-                    }
-                })
-                .list();
+            h.execute("INSERT INTO `prices`.`companies` (`name`, `price`) VALUES (?, ?)",
+                    stock.getName(),
+                    stock.getPrice());
 
-        h.close();
-        return stocks;
+            return h.createQuery("SELECT id, name, price FROM prices.companies")
+                    .map(new ResultSetMapper<Stock>() {
+                        @Override
+                        public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
+                            return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"));
+                        }
+                    })
+                    .list();
+        }
+//        } catch (Exception e) {
+//            h.rollback();
+//            throw new RuntimeException(e);
+//        }
+
     }
 
-    public Iterable<Stock> updateStock() {
-        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root");
+    public Iterable<Stock> updateStock(Stock stock) {
+        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root&relaxAutoCommit=true");
         Handle h = dbi.open();
 
-        h.execute("UPDATE `prices`.`companies` SET `price`='150' WHERE `id`='2'");
+        try (Handle handle = dbi.open()) {
+//            h.begin();
 
-        List<Stock> stocks = h.createQuery("SELECT id, name, price FROM prices.companies")
-                .map(new ResultSetMapper<Stock>() {
-                    @Override
-                    public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                        return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"));
-                    }
-                })
-                .list();
+            h.execute("UPDATE `prices`.`companies` SET `price`=? WHERE `id`=?",
+                    stock.getPrice(),
+                    stock.getId());
 
-        h.close();
-        return stocks;
+//            handle.commit();
+
+            return h.createQuery("SELECT id, name, price FROM prices.companies")
+                    .map(new ResultSetMapper<Stock>() {
+                        @Override
+                        public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
+                            return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"));
+                        }
+                    })
+                    .list();
+        }
+//        } catch (Exception e) {
+//            h.rollback();
+//            throw new RuntimeException(e);
+//        }
+
     }
 }
