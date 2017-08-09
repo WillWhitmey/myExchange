@@ -17,14 +17,10 @@ public class StockController {
         return dataToJson(stockDao.getAllStocks());
     };
     public static Object createAStock(Request req, Response res) throws IOException {
-        Set name = req.attributes();
-        System.out.println(req.body());
-
         ObjectMapper objectMapper = new ObjectMapper();
 
         Stock stock = objectMapper.readValue(req.body(), Stock.class);
 
-        stock.getPriceAtDate();
         return dataToJson(stockDao.createStock(stock));
     }
     public static Object updateAStock(Request req, Response res) throws IOException {
