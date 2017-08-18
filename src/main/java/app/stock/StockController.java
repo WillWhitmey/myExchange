@@ -14,6 +14,9 @@ import static app.util.JsonUtil.*;
 public class StockController {
 
     public static Route fetchAllStocks = (Request request, Response response) -> {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
         return dataToJson(stockDao.getAllStocks());
     };
     public static Object createAStock(Request req, Response res) throws IOException {

@@ -27,4 +27,11 @@ public class Filters {
         response.header("Content-Encoding", "gzip");
     };
 
+    public static Filter addCORSHeader = (req, res) -> {
+      res.header("Access-Control-Allow-Origin", "*");
+      if (req.requestMethod().equals("OPTIONS")) {
+          Spark.halt(200);
+      }
+    };
+
 }

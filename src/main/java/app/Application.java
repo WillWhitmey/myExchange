@@ -3,6 +3,9 @@ package app;
 import app.stock.*;
 import app.user.*;
 import app.util.*;
+import spark.Filter;
+import spark.Spark;
+
 import static spark.Spark.*;
 import static spark.debug.DebugScreen.*;
 
@@ -22,9 +25,11 @@ public class Application {
         port(4567);
         enableDebugScreen();
 
+
         // Set up before-filters (called before each get/post)
         before("*",                  Filters.addTrailingSlashes);
         before("*",                  Filters.handleLocaleChange);
+        before("*", Filters.addCORSHeader);
 
         // Set up routes
         get("/stocks/",         StockController.fetchAllStocks);

@@ -13,7 +13,7 @@ import java.util.*;
 
 public class StockDao {
 
-    public Iterable<Stock> getAllStocks() {
+    public StockSummary getAllStocks() {
         DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root");
         Handle h = dbi.open();
 
@@ -27,7 +27,7 @@ public class StockDao {
                 .list();
 
         h.close();
-        return stocks;
+        return new StockSummary(stocks);
     }
 
     public Iterable<Stock> createStock(Stock stock) {
