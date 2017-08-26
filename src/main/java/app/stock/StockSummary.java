@@ -11,6 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class StockSummary {
 
-    private final List<Stock> stocks;
+    private final List<Stock> stockSummaries;
 
 }

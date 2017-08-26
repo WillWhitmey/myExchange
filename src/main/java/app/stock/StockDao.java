@@ -17,11 +17,11 @@ public class StockDao {
         DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root");
         Handle h = dbi.open();
 
-        List<Stock> stocks = h.createQuery("SELECT id, name, price FROM prices.companies")
+        List<Stock> stocks = h.createQuery("SELECT id, name, price, image FROM prices.companies")
                 .map(new ResultSetMapper<Stock>() {
                     @Override
                     public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                        return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"));
+                        return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
                     }
                 })
                 .list();
@@ -36,15 +36,16 @@ public class StockDao {
 
         try (Handle handle = dbi.open()) {
 
-            h.execute("INSERT INTO `prices`.`companies` (`name`, `price`) VALUES (?, ?)",
+            h.execute("INSERT INTO `prices`.`companies` (`name`, `price`, `image`) VALUES (?, ?, ?)",
                     stock.getName(),
-                    stock.getPrice());
+                    stock.getPrice(),
+                    stock.getImage());
 
-            return h.createQuery("SELECT id, name, price FROM prices.companies")
+            return h.createQuery("SELECT id, name, price, image FROM prices.companies")
                     .map(new ResultSetMapper<Stock>() {
                         @Override
                         public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                            return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"));
+                            return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
                         }
                     })
                     .list();
@@ -69,11 +70,11 @@ public class StockDao {
 
 //            handle.commit();
 
-            return h.createQuery("SELECT id, name, price FROM prices.companies")
+            return h.createQuery("SELECT id, name, price, image FROM prices.companies")
                     .map(new ResultSetMapper<Stock>() {
                         @Override
                         public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                            return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"));
+                            return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
                         }
                     })
                     .list();
@@ -94,11 +95,11 @@ public class StockDao {
             h.execute("DELETE FROM `prices`.`companies` WHERE id=?",
                     stock.getId());
 
-            return h.createQuery("SELECT id, name, price FROM prices.companies")
+            return h.createQuery("SELECT id, name, price, image FROM prices.companies")
                     .map(new ResultSetMapper<Stock>() {
                         @Override
                         public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                            return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"));
+                            return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
                         }
                     })
                     .list();

@@ -29,6 +29,8 @@ public class Filters {
 
     public static Filter addCORSHeader = (req, res) -> {
       res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS");
+      res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
       if (req.requestMethod().equals("OPTIONS")) {
           Spark.halt(200);
       }

@@ -21,6 +21,7 @@ public class StockController {
     };
     public static Object createAStock(Request req, Response res) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
+        System.out.println(req.body());
 
         Stock stock = objectMapper.readValue(req.body(), Stock.class);
 
