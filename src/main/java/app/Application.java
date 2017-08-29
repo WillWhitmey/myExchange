@@ -31,9 +31,9 @@ public class Application {
         before("*",                  Filters.handleLocaleChange);
         before("*", Filters.addCORSHeader);
 
-        // Set up routesz
+        // Set up routes
         get("/stockSummaries/",         StockController.fetchAllStocks);
-        post("/stocks/create/", "application/json", (req, res) -> { return StockController.createAStock(req, res);});
+        post("/stockSummaries/create/", "application/json", (req, res) -> { return StockController.createAStock(req, res);});
         put("/stocks/update/",  "application/json", (req, res) -> { return StockController.updateAStock(req, res);});
         delete("/stocks/delete/", "application/json", (req, res) -> { return StockController.deleteAStock(req, res);});
         get("/users/",          UserController.fetchAllUsers);

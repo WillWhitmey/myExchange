@@ -4,20 +4,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Setter
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Stock {
 
-    private Integer id;
+    private UUID id;
     private String name;
 
     //BigDecimal
     public Integer price;
     public String image;
 
-    public Stock(Integer id, String name, Integer price, String image) {
+    public Stock(UUID id, String name, Integer price, String image) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -29,11 +30,11 @@ public class Stock {
         return BigDecimal.valueOf(1);
     }
 
-    public Integer getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

@@ -21,7 +21,7 @@ public class StockDao {
                 .map(new ResultSetMapper<Stock>() {
                     @Override
                     public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                        return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
+                        return new Stock(resultSet.getUUID("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
                     }
                 })
                 .list();
@@ -36,20 +36,25 @@ public class StockDao {
 
         try (Handle handle = dbi.open()) {
 
+            UUID uniqueId = UUID.randomUUID();
+
+            stock.setId(uniqueId);
+
             h.execute("INSERT INTO `prices`.`companies` (`name`, `price`, `image`) VALUES (?, ?, ?)",
                     stock.getName(),
                     stock.getPrice(),
                     stock.getImage());
 
-            return h.createQuery("SELECT id, name, price, image FROM prices.companies")
-                    .map(new ResultSetMapper<Stock>() {
-                        @Override
-                        public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                            return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
-                        }
-                    })
-                    .list();
+//            return h.createQuery("SELECT id, name, price, image FROM prices.companies")
+//                    .map(new ResultSetMapper<Stock>() {
+//                        @Override
+//                        public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
+//                            return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
+//                        }
+//                    })
+//                    .list();
         }
+        return stock;
 //        } catch (Exception e) {
 //            h.rollback();
 //            throw new RuntimeException(e);
