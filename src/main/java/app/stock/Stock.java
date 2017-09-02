@@ -11,14 +11,14 @@ import java.util.UUID;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Stock {
 
-    private UUID id;
+    private String id;
     private String name;
 
     //BigDecimal
     public Integer price;
     public String image;
 
-    public Stock(UUID id, String name, Integer price, String image) {
+    public Stock(String id, String name, Integer price, String image) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -30,11 +30,11 @@ public class Stock {
         return BigDecimal.valueOf(1);
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

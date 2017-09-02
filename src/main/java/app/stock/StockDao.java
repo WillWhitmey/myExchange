@@ -1,12 +1,14 @@
 package app.stock;
 
 import com.google.common.collect.*;
+import org.apache.commons.collections.iterators.IteratorChain;
 import spark.*;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
 
+import javax.swing.text.html.HTMLDocument;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -21,7 +23,7 @@ public class StockDao {
                 .map(new ResultSetMapper<Stock>() {
                     @Override
                     public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                        return new Stock(resultSet.getUUID("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
+                        return new Stock(resultSet.getString("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
                     }
                 })
                 .list();
@@ -30,36 +32,26 @@ public class StockDao {
         return new StockSummary(stocks);
     }
 
-    public Iterable<Stock> createStock(Stock stock) {
+    public StockSummary createStock(Stock stock) {
         DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root&relaxAutoCommit=true");
         Handle h = dbi.open();
 
         try (Handle handle = dbi.open()) {
 
-            UUID uniqueId = UUID.randomUUID();
+            String uniqueID = UUID.randomUUID().toString();
 
-            stock.setId(uniqueId);
+            stock.setId(uniqueID);
 
-            h.execute("INSERT INTO `prices`.`companies` (`name`, `price`, `image`) VALUES (?, ?, ?)",
+            h.execute("INSERT INTO `prices`.`companies` (`id`, `name`, `price`, `image`) VALUES (?, ?, ?, ?)",
+                    stock.getId(),
                     stock.getName(),
                     stock.getPrice(),
                     stock.getImage());
 
-//            return h.createQuery("SELECT id, name, price, image FROM prices.companies")
-//                    .map(new ResultSetMapper<Stock>() {
-//                        @Override
-//                        public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-//                            return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
-//                        }
-//                    })
-//                    .list();
-        }
-        return stock;
-//        } catch (Exception e) {
-//            h.rollback();
-//            throw new RuntimeException(e);
-//        }
+            List list = java.util.Arrays.asList(stock);
 
+            return new StockSummary(list);
+        }
     }
 
     public Iterable<Stock> updateStock(Stock stock) {
@@ -79,7 +71,7 @@ public class StockDao {
                     .map(new ResultSetMapper<Stock>() {
                         @Override
                         public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                            return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
+                            return new Stock(resultSet.getString("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
                         }
                     })
                     .list();
@@ -104,7 +96,7 @@ public class StockDao {
                     .map(new ResultSetMapper<Stock>() {
                         @Override
                         public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                            return new Stock(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
+                            return new Stock(resultSet.getString("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
                         }
                     })
                     .list();
