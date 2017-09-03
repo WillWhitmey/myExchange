@@ -2,6 +2,7 @@ package app.stock;
 
 import app.util.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import spark.*;
 
@@ -17,10 +18,10 @@ public class StockController {
     public static Route fetchAllStocks = (Request request, Response response) -> dataToJson(stockDao.getAllStocks());
 
     public static Object createAStock(Request req, Response res) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
-
-        Stock stock = objectMapper.readValue(req.body(), Stock.class);
+        String json = req.body();
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectReader reader = mapper.reader(Stock.class).withRootName("stock");
+        Stock stock = reader.readValue(json);
 
         return dataToJson(stockDao.createStock(stock));
     }
