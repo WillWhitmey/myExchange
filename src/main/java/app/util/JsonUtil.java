@@ -7,7 +7,6 @@ public class JsonUtil {
     public static String dataToJson(Object data) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            System.out.println(data);
             mapper.enable(SerializationFeature.INDENT_OUTPUT);
             StringWriter sw = new StringWriter();
             mapper.writeValue(sw, data);

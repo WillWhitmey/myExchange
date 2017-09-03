@@ -1,14 +1,12 @@
 package app.stock;
 
 import com.google.common.collect.*;
-import org.apache.commons.collections.iterators.IteratorChain;
 import spark.*;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
 
-import javax.swing.text.html.HTMLDocument;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;

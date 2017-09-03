@@ -17,29 +17,34 @@ public class Application {
 
     public static void main(String[] args) {
 
-        // Instantiate your dependencies
+        // Dependencies
         stockDao = new StockDao();
         userDao = new UserDao();
 
-        // Configure Spark
+        // Configuration
         port(4567);
         enableDebugScreen();
 
 
-        // Set up before-filters (called before each get/post)
-        before("*",                  Filters.addTrailingSlashes);
-        before("*",                  Filters.handleLocaleChange);
-        before("*", Filters.addCORSHeader);
+        // Filters
+        before("*",     Filters.addTrailingSlashes);
+        before("*",     Filters.handleLocaleChange);
+        before("*",     Filters.addCORSHeader);
 
-        // Set up routes
-        get("/stockSummaries/",         StockController.fetchAllStocks);
-        post("/stockSummaries/create/", "application/json", (req, res) -> { return StockController.createAStock(req, res);});
-        put("/stocks/update/",  "application/json", (req, res) -> { return StockController.updateAStock(req, res);});
-        delete("/stocks/delete/", "application/json", (req, res) -> { return StockController.deleteAStock(req, res);});
+        // Routes
+        get("/stockSummaries/",             StockController.fetchAllStocks);
+
+        post("/stockSummaries/create/", "application/json", (req, res) -> StockController.createAStock(req, res));
+
+        put("/stocks/update/",  "application/json", (req, res) -> StockController.updateAStock(req, res));
+
+        delete("/stocks/delete/", "application/json", (req, res) -> StockController.deleteAStock(req, res));
+
         get("/users/",          UserController.fetchAllUsers);
+
         get("*",                     ViewUtil.notFound);
 
-        //Set up after-filters (called after each get/post)
+        // Filters
         after("*",                   Filters.addGzipHeader);
 
     }
