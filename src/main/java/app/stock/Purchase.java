@@ -12,10 +12,10 @@ public class Purchase {
 
     private String id;
     private Integer price;
-    private Integer time;
+    private Long time;
     private String companyID;
 
-    public Purchase(String id, Integer price, Integer time, String companyID) {
+    public Purchase(String id, Integer price, Long time, String companyID) {
         this.id = id;
         this.price = price;
         this.time = time;
@@ -38,11 +38,11 @@ public class Purchase {
         this.price = price;
     }
 
-    public Integer getTime() {
+    public Long getTime() {
         return time;
     }
 
-    public void setTime(Integer time) {
+    public void setTime(Long time) {
         this.time = time;
     }
 
