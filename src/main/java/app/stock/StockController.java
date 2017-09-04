@@ -25,6 +25,16 @@ public class StockController {
 
         return dataToJson(stockDao.createStock(stock));
     }
+
+    public static Object buyAStock(Request req, Response res) throws IOException {
+        String json = req.body();
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectReader reader = mapper.reader(Purchase.class).withRootName("purchase");
+        Purchase purchase = reader.readValue(json);
+
+        return dataToJson(stockDao.buyStock(purchase));
+    }
+
     public static Object updateAStock(Request req, Response res) throws IOException {
         Set name = req.attributes();
         System.out.println(req.body());

@@ -36,6 +36,8 @@ public class Application {
 
         post("/stockSummaries/create/", "application/json", (req, res) -> StockController.createAStock(req, res));
 
+        post("/stockSummaries/buy/", "application/json", (req, res) -> StockController.buyAStock(req, res));
+
         put("/stocks/update/",  "application/json", (req, res) -> StockController.updateAStock(req, res));
 
         delete("/stocks/delete/", "application/json", (req, res) -> StockController.deleteAStock(req, res));

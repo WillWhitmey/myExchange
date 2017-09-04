@@ -52,6 +52,28 @@ public class StockDao {
         }
     }
 
+    public PurchaseSummary buyStock(Purchase purchase) {
+        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root&relaxAutoCommit=true");
+        Handle h = dbi.open();
+
+        try (Handle handle = dbi.open()) {
+
+            String uniqueID = UUID.randomUUID().toString();
+
+            purchase.setId(uniqueID);
+
+            h.execute("INSERT INTO `prices`.`prices` (`id`, `price`, `time`, `companyID`) VALUES (?, ?, ?, ?)",
+                    purchase.getId(),
+                    purchase.getPrice(),
+                    purchase.getTime(),
+                    purchase.getCompanyID());
+
+            List list = java.util.Arrays.asList(purchase);
+
+            return new PurchaseSummary(list);
+        }
+    }
+
     public Iterable<Stock> updateStock(Stock stock) {
         DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root&relaxAutoCommit=true");
         Handle h = dbi.open();
