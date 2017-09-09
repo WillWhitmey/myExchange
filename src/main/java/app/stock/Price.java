@@ -8,18 +8,18 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Purchase {
+public class Price {
 
     private String id;
     private Integer price;
     private Long time;
     private String companyID;
 
-    public Purchase(String id, Integer price, Long time, String companyID) {
+    public Price(String id, Integer price, Long time) {
         this.id = id;
         this.price = price;
         this.time = time;
-        this.companyID = companyID;
+//        this.companyID = companyID;
     }
 
     public String getId() {

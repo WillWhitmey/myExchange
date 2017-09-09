@@ -9,8 +9,9 @@ import java.util.List;
 @Setter
 @Getter
 @AllArgsConstructor
-public class PurchaseSummary {
+public class PriceSummary {
 
-    private final List<Stock> purchase;
+    private final List<Price> prices;
+//    private final String id;
 
 }

@@ -1,7 +1,5 @@
 package app.stock;
 
-import com.google.common.collect.*;
-import spark.*;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 import org.skife.jdbi.v2.StatementContext;
@@ -30,6 +28,40 @@ public class StockDao {
         return new StockSummary(stocks);
     }
 
+    public PriceSummary getAllPrices(String companyID) {
+        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root");
+        Handle h = dbi.open();
+
+        List<Price> prices = h.createQuery("SELECT * FROM prices.prices WHERE companyID=:id ORDER BY time ASC").bind("id", companyID)
+                .map(new ResultSetMapper<Price>() {
+                    @Override
+                    public Price map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
+                        return new Price(resultSet.getString("id"), resultSet.getInt("price"), resultSet.getLong("time"));
+                    }
+                })
+                .list();
+
+        h.close();
+        return new PriceSummary(prices);
+    }
+
+    public PriceSummary getLatestPrice(String companyID) {
+        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root");
+        Handle h = dbi.open();
+
+        List<Price> prices = h.createQuery("SELECT * FROM prices.prices WHERE companyID=:id ORDER BY time DESC LIMIT 1").bind("id", companyID)
+                .map(new ResultSetMapper<Price>() {
+                    @Override
+                    public Price map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
+                        return new Price(resultSet.getString("id"), resultSet.getInt("price"), resultSet.getLong("time"));
+                    }
+                })
+                .list();
+
+        h.close();
+        return new PriceSummary(prices);
+    }
+
     public StockSummary createStock(Stock stock) {
         DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root&relaxAutoCommit=true");
         Handle h = dbi.open();
@@ -52,7 +84,7 @@ public class StockDao {
         }
     }
 
-    public PurchaseSummary buyStock(Purchase purchase) {
+    public PriceSummary buyStock(Price price) {
         DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root&relaxAutoCommit=true");
         Handle h = dbi.open();
 
@@ -60,17 +92,17 @@ public class StockDao {
 
             String uniqueID = UUID.randomUUID().toString();
 
-            purchase.setId(uniqueID);
+            price.setId(uniqueID);
 
             h.execute("INSERT INTO `prices`.`prices` (`id`, `price`, `time`, `companyID`) VALUES (?, ?, ?, ?)",
-                    purchase.getId(),
-                    purchase.getPrice(),
-                    purchase.getTime(),
-                    purchase.getCompanyID());
+                    price.getId(),
+                    price.getPrice(),
+                    price.getTime(),
+                    price.getCompanyID());
 
-            List list = java.util.Arrays.asList(purchase);
+            List list = java.util.Arrays.asList(price);
 
-            return new PurchaseSummary(list);
+            return new PriceSummary(list);
         }
     }
 

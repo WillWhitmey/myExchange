@@ -34,6 +34,10 @@ public class Application {
         // Routes
         get("/stockSummaries/",             StockController.fetchAllStocks);
 
+        get("/stockSummaries/prices/:companyID/",        "application/json", (req, res) -> StockController.fetchAllPrices(req, res));
+
+        get("/stockSummaries/latestPrice/:companyID/",        "application/json", (req, res) -> StockController.fetchLatestPrice(req, res));
+
         post("/stockSummaries/create/", "application/json", (req, res) -> StockController.createAStock(req, res));
 
         post("/stockSummaries/buy/", "application/json", (req, res) -> StockController.buyAStock(req, res));
