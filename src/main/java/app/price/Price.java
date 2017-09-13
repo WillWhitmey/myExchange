@@ -1,9 +1,8 @@
-package app.stock;
+package app.price;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
-
-import java.math.BigDecimal;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Setter
 @NoArgsConstructor
@@ -15,11 +14,11 @@ public class Price {
     private Long time;
     private String companyID;
 
-    public Price(String id, Integer price, Long time) {
+    public Price(String id, Integer price, Long time, String companyID) {
         this.id = id;
         this.price = price;
         this.time = time;
-//        this.companyID = companyID;
+        this.companyID = companyID;
     }
 
     public String getId() {

@@ -1,10 +1,8 @@
 package app.stock;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
-
-import java.math.BigDecimal;
-import java.util.UUID;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Setter
 @NoArgsConstructor
@@ -14,20 +12,9 @@ public class Stock {
     private String id;
     private String name;
 
-    //BigDecimal
-    public Integer price;
-    public String image;
-
-    public Stock(String id, String name, Integer price, String image) {
+    public Stock(String id, String name) {
         this.id = id;
         this.name = name;
-        this.price = price;
-        this.image = image;
-    }
-
-    public BigDecimal getPriceAtDate() {
-        ///do something
-        return BigDecimal.valueOf(1);
     }
 
     public String getId() {
@@ -46,19 +33,4 @@ public class Stock {
         this.name = name;
     }
 
-    public Integer getPrice() {
-        return price;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
 }

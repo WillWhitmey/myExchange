@@ -7,19 +7,20 @@ import org.skife.jdbi.v2.tweak.ResultSetMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 public class StockDao {
 
     public StockSummary getAllStocks() {
-        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root");
+        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/stockify?user=root");
         Handle h = dbi.open();
 
-        List<Stock> stocks = h.createQuery("SELECT id, name, price, image FROM prices.companies")
+        List<Stock> stocks = h.createQuery("SELECT * FROM Companies")
                 .map(new ResultSetMapper<Stock>() {
                     @Override
                     public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                        return new Stock(resultSet.getString("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
+                        return new Stock(resultSet.getString("CompanyID"), resultSet.getString("Name"));
                     }
                 })
                 .list();
@@ -28,42 +29,8 @@ public class StockDao {
         return new StockSummary(stocks);
     }
 
-    public PriceSummary getAllPrices(String companyID) {
-        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root");
-        Handle h = dbi.open();
-
-        List<Price> prices = h.createQuery("SELECT * FROM prices.prices WHERE companyID=:id ORDER BY time ASC").bind("id", companyID)
-                .map(new ResultSetMapper<Price>() {
-                    @Override
-                    public Price map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                        return new Price(resultSet.getString("id"), resultSet.getInt("price"), resultSet.getLong("time"));
-                    }
-                })
-                .list();
-
-        h.close();
-        return new PriceSummary(prices);
-    }
-
-    public PriceSummary getLatestPrice(String companyID) {
-        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root");
-        Handle h = dbi.open();
-
-        List<Price> prices = h.createQuery("SELECT * FROM prices.prices WHERE companyID=:id ORDER BY time DESC LIMIT 1").bind("id", companyID)
-                .map(new ResultSetMapper<Price>() {
-                    @Override
-                    public Price map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                        return new Price(resultSet.getString("id"), resultSet.getInt("price"), resultSet.getLong("time"));
-                    }
-                })
-                .list();
-
-        h.close();
-        return new PriceSummary(prices);
-    }
-
     public StockSummary createStock(Stock stock) {
-        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root&relaxAutoCommit=true");
+        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/stockify?user=root&relaxAutoCommit=true");
         Handle h = dbi.open();
 
         try (Handle handle = dbi.open()) {
@@ -74,9 +41,7 @@ public class StockDao {
 
             h.execute("INSERT INTO `prices`.`companies` (`id`, `name`, `price`, `image`) VALUES (?, ?, ?, ?)",
                     stock.getId(),
-                    stock.getName(),
-                    stock.getPrice(),
-                    stock.getImage());
+                    stock.getName());
 
             List list = java.util.Arrays.asList(stock);
 
@@ -84,79 +49,4 @@ public class StockDao {
         }
     }
 
-    public PriceSummary buyStock(Price price) {
-        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root&relaxAutoCommit=true");
-        Handle h = dbi.open();
-
-        try (Handle handle = dbi.open()) {
-
-            String uniqueID = UUID.randomUUID().toString();
-
-            price.setId(uniqueID);
-
-            h.execute("INSERT INTO `prices`.`prices` (`id`, `price`, `time`, `companyID`) VALUES (?, ?, ?, ?)",
-                    price.getId(),
-                    price.getPrice(),
-                    price.getTime(),
-                    price.getCompanyID());
-
-            List list = java.util.Arrays.asList(price);
-
-            return new PriceSummary(list);
-        }
-    }
-
-    public Iterable<Stock> updateStock(Stock stock) {
-        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root&relaxAutoCommit=true");
-        Handle h = dbi.open();
-
-        try (Handle handle = dbi.open()) {
-//            h.begin();
-
-            h.execute("UPDATE `prices`.`companies` SET `price`=? WHERE `id`=?",
-                    stock.getPrice(),
-                    stock.getId());
-
-//            handle.commit();
-
-            return h.createQuery("SELECT id, name, price, image FROM prices.companies")
-                    .map(new ResultSetMapper<Stock>() {
-                        @Override
-                        public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                            return new Stock(resultSet.getString("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
-                        }
-                    })
-                    .list();
-        }
-//        } catch (Exception e) {
-//            h.rollback();
-//            throw new RuntimeException(e);
-//        }
-
-    }
-
-    public Iterable<Stock> deleteStock(Stock stock) {
-        DBI dbi = new DBI("jdbc:mysql://127.0.0.1:3306/?user=root&relaxAutoCommit=true");
-        Handle h = dbi.open();
-
-        try (Handle handle = dbi.open()) {
-
-            h.execute("DELETE FROM `prices`.`companies` WHERE id=?",
-                    stock.getId());
-
-            return h.createQuery("SELECT id, name, price, image FROM prices.companies")
-                    .map(new ResultSetMapper<Stock>() {
-                        @Override
-                        public Stock map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
-                            return new Stock(resultSet.getString("id"), resultSet.getString("name"), resultSet.getInt("price"), resultSet.getString("image"));
-                        }
-                    })
-                    .list();
-        }
-//        } catch (Exception e) {
-//            h.rollback();
-//            throw new RuntimeException(e);
-//        }
-
-    }
 }

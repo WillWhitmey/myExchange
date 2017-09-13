@@ -1,25 +1,26 @@
 package app;
 
-import app.stock.*;
-import app.user.*;
-import app.util.*;
-import spark.Filter;
-import spark.Spark;
+import app.price.PriceController;
+import app.price.PriceDao;
+import app.stock.StockController;
+import app.stock.StockDao;
+import app.util.Filters;
+import app.util.ViewUtil;
 
 import static spark.Spark.*;
-import static spark.debug.DebugScreen.*;
+import static spark.debug.DebugScreen.enableDebugScreen;
 
 public class Application {
 
     // Declare dependencies
     public static StockDao stockDao;
-    public static UserDao userDao;
+    public static PriceDao priceDao;
 
     public static void main(String[] args) {
 
         // Dependencies
         stockDao = new StockDao();
-        userDao = new UserDao();
+        priceDao = new PriceDao();
 
         // Configuration
         port(4567);
@@ -32,26 +33,24 @@ public class Application {
         before("*",     Filters.addCORSHeader);
 
         // Routes
-        get("/stockSummaries/",             StockController.fetchAllStocks);
+        get( "/stock/summaries/",                                                            StockController.fetchAllStocks);
 
-        get("/stockSummaries/prices/:companyID/",        "application/json", (req, res) -> StockController.fetchAllPrices(req, res));
+        post("/stock/create/",                  "application/json", (req, res) -> StockController.createAStock(req, res));
 
-        get("/stockSummaries/latestPrice/:companyID/",        "application/json", (req, res) -> StockController.fetchLatestPrice(req, res));
+        get( "/prices/:companyID/",             "application/json", (req, res) -> PriceController.fetchAllPrices(req, res));
 
-        post("/stockSummaries/create/", "application/json", (req, res) -> StockController.createAStock(req, res));
+        get( "/prices/latestPrice/:companyID/", "application/json", (req, res) -> PriceController.fetchLatestPrice(req, res));
 
-        post("/stockSummaries/buy/", "application/json", (req, res) -> StockController.buyAStock(req, res));
+        post("/prices/buy/",                    "application/json", (req, res) -> PriceController.buyAStock(req, res));
 
-        put("/stocks/update/",  "application/json", (req, res) -> StockController.updateAStock(req, res));
+//        put("/stocks/update/",  "application/json", (req, res) -> StockController.updateAStock(req, res));
 
-        delete("/stocks/delete/", "application/json", (req, res) -> StockController.deleteAStock(req, res));
+//        delete("/stocks/delete/", "application/json", (req, res) -> StockController.deleteAStock(req, res));
 
-        get("/users/",          UserController.fetchAllUsers);
-
-        get("*",                     ViewUtil.notFound);
+        get("*",         ViewUtil.notFound);
 
         // Filters
-        after("*",                   Filters.addGzipHeader);
+        after("*",       Filters.addGzipHeader);
 
     }
 

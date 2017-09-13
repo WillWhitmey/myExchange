@@ -1,4 +1,4 @@
-package app.stock;
+package app.price;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +12,5 @@ import java.util.List;
 public class PriceSummary {
 
     private final List<Price> prices;
-//    private final String id;
 
 }
